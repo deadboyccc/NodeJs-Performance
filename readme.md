@@ -1,60 +1,50 @@
-# NodeTS Project
+# Node.js Performance Benchmark
 
-This is a simple `Node.js Starter` using TypeScript.
+This project is a test benchmark of the Node.js process, involving various methods to optimize backend performance using clustering, worker threads, caching, and other scaling strategies.
 
-## Project Structure
+## Features
 
-- `.vscode/launch.json`: Configuration for debugging with VSCode.
-- `.vscode/tasks.json`: Configuration for TypeScript tasks in VSCode.
-- `.gitignore`: Specifies files and directories to be ignored by Git.
-- `.prettierrc`: Configuration for Prettier code formatter.
-- `src/index.ts`: Entry point of the application.
-- `eslint.config.mjs`: Configuration for ESLint.
-- `tsconfig.json`: TypeScript compiler options.
-- `package.json`: Project metadata and dependencies.
+- **Clustering**: Utilize multiple CPU cores to handle concurrent requests.
+- **Worker Threads**: Offload CPU-intensive tasks to worker threads.
+- **Caching**: Implement caching strategies to reduce load times.
+- **Scaling Strategies**: Explore different methods to scale the application.
+
+## Benchmarking Tools
+
+- **k6**: A modern load testing tool to benchmark the performance.
+- **Apache Benchmark (ab)**: A simple tool to test and run benchmarks.
+
+## Monitoring and Visualization
+
+- **PM2**: Use the PM2 npm package to view a beautiful UI showing performance metrics.
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js
-- npm
-
-### Installation
-
-1. Clone the repository:
-  ```sh
-  git clone <repository-url>
-  cd nodets
-  ```
-
-2. Install dependencies:
-  ```sh
+1. **Install Dependencies**:
+  ```bash
   npm install
   ```
 
-### Running the Application
+2. **Run the Application**:
+  ```bash
+  npm start
+  ```
 
-To start the application:
-```sh
-npm start
-```
+3. **Run Benchmarks**:
+  - Using k6:
+    ```bash
+    k6 run src/script.js
+    ```
+  - Using Apache Benchmark:
+    ```bash
+    ab -n 1000 -c 10 http://localhost:3000/
+    ```
 
-To start the application with Nodemon for automatic restarts:
-```sh
-npm run nodemon
-```
+4. **Monitor Performance**:
+  ```bash
+  pm2 monit
+  ```
 
-### Development
+## License
 
-To watch for TypeScript changes and compile automatically:
-```sh
-npm run tsc:watch
-```
-
-### Linting
-
-To lint the code using ESLint:
-```sh
-npm run lint
-```
+This project is licensed under the ISC License.
