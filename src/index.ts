@@ -11,7 +11,7 @@ function doWork(msDuration: number) {
 }
 
 app.get("/", (req, res, next) => {
-  doWork(5000)
+  // doWork(5000)
   res.send("Hello World!")
 })
 
