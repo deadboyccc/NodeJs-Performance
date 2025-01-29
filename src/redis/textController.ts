@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express"
 import { redisClient } from "./app"
 import TextModel from "./textModel"
-import { Console } from "console"
 
 export const getTexts: RequestHandler = async (req, res, next) => {
   try {
