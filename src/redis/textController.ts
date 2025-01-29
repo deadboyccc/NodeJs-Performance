@@ -1,5 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express"
+import { redisClient } from "./app"
 import TextModel from "./textModel"
+import { Console } from "console"
 
 export const getTexts: RequestHandler = async (req, res, next) => {
   try {
@@ -28,20 +30,37 @@ export const createText = async (
     res.status(500).json({ message: "Error creating text" })
   }
 }
-export const getTextbyId = async (
+export const getTextById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const text = await TextModel.findById(req.params.id)
+    const textId = req.params.id
+    if (!textId) {
+      res.status(400).json({ message: "Text ID is required" })
+      return
+    }
+
+    const cachedText = await redisClient.get(textId)
+    if (cachedText) {
+      res.status(200).json({
+        message: "Text retrieved from cache successfully",
+        data: JSON.parse(cachedText)
+      })
+      return
+    }
+
+    const text = await TextModel.findById(textId)
     if (!text) {
       res.status(404).json({ message: "Text not found" })
       return
     }
+
     res.status(200).json({ message: "Text retrieved successfully", data: text })
+    await redisClient.set(textId, JSON.stringify(text))
   } catch (error) {
-    console.log(error)
+    console.error("Error retrieving text:", error)
     res.status(500).json({ message: "Error retrieving text" })
   }
 }

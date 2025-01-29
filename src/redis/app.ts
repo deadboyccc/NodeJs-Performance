@@ -1,5 +1,6 @@
 import express from "express"
-import redis from "redis"
+import { createClient } from "redis"
+
 import mongoose from "mongoose"
 import textRouter from "./textRouter"
 
@@ -14,14 +15,31 @@ mongoose
 
 // connecting to Redis
 
-const redisClient = redis.createClient({
+// Create Redis client
+export const redisClient = createClient({
   url: "redis://localhost:6379"
 })
-redisClient.set("name", "Ahmed")
+;(async () => {
+  try {
+    await redisClient.connect() // Ensure the Redis client connects before usage
+    console.log("Connected to Redis")
 
+    // Set initial value in Redis
+    await redisClient.hSet("German", "blue", "azul")
+  } catch (error) {
+    console.error("Redis connection error:", error)
+  }
+})()
+
+// Route to fetch value from Redis
 app.get("/", async (req, res) => {
-  const name = await redisClient.get("name")
-  res.send(`Hello, ${name}!`)
+  try {
+    const name = await redisClient.hGet("German", "blue")
+    res.send(`Hello, ${name || "Guest"}!`)
+  } catch (error) {
+    console.error("Error fetching from Redis:", error)
+    res.status(500).send("Internal Server Error")
+  }
 })
 
 app.use(express.json())
