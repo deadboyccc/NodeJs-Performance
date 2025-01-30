@@ -13,6 +13,7 @@
   "description": "",
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@faker-js/faker": "^9.4.0",
     "@types/express": "^5.0.0",
     "@types/k6": "^0.54.2",
     "@types/node": "^22.10.7",

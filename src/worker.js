@@ -1,22 +1,36 @@
-const { parentPort, workerData } = require("worker_threads")
+const { Kafka } = require("kafkajs")
+const { faker } = require("@faker-js/faker")
 
-// Simulate a task - the data is posted from main thread
-function performTask(data) {
-  const { num } = data
-  let result = 0
-  for (let i = 0; i < num * 1e6; i++) {
-    result += i % 2 === 0 ? i : -i
+console.log("Worker is running!")
+
+const kafka = new Kafka({
+  clientId: "worker-thread",
+  brokers: ["localhost:9092"]
+})
+
+const producer = kafka.producer()
+
+const runProducer = async () => {
+  try {
+    await producer.connect()
+
+    // Generate 50 messages - faker js sentence
+    const messages = Array.from({ length: 1 }, () => ({
+      value: faker.lorem.sentence()
+    }))
+
+    // Send all messages in bulk as an array of message
+    await producer.send({
+      topic: "first_topic",
+      messages
+    })
+
+    console.log("Messages sent successfully!")
+  } catch (error) {
+    console.error("Error producing message:", error)
+  } finally {
+    await producer.disconnect()
   }
-  return result
 }
 
-// Perform the task and send the result back to the main thread
-const result = performTask(workerData) // workerData coming from Main Thread
-parentPort.postMessage(result) // sending the data back to the main thread
-
-function doWork(msDuration) {
-  const start = Date.now()
-  while (Date.now() - start < msDuration) {
-    // Simulate work  -time-based-
-  }
-}
+runProducer()

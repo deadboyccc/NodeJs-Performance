@@ -29,10 +29,12 @@ const runConsumer = async () => {
       groupId: "my-group"
     })
     await consumer.connect()
-    await consumer.subscribe({ topic: "first_topic" })
+    await consumer.subscribe({ topic: "first_topic", fromBeginning: true })
     await consumer.run({
       eachMessage: async ({ message }) => {
-        console.log(`Received message: ${message.value!.toString()}`)
+        console.log(
+          `Received message: ${message.value!.toString()}  | AT: ${message.timestamp} | Attributes: ${message.attributes} | Key: ${message.key} |`
+        )
       }
     })
   } catch (err) {
@@ -40,4 +42,5 @@ const runConsumer = async () => {
   }
 }
 
-runConsumer()
+runProducer()
+// runConsumer()

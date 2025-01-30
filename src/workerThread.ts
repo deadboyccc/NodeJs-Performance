@@ -1,26 +1,76 @@
+import { Kafka } from "kafkajs"
 import { Worker } from "worker_threads"
+import path from "path"
 
-// Function to run a task in a worker thread (with different event listners)
-function runWorkerTask(workerData: any) {
+// Kafka client
+const kafka = new Kafka({
+  clientId: "main-thread",
+  brokers: ["localhost:9092"]
+})
+
+// Function to create and manage the worker thread
+const runWorkerTask = async (message: string) => {
   return new Promise((resolve, reject) => {
-    const worker = new Worker("./worker.js", { workerData })
+    const worker = new Worker(path.resolve(__dirname, "worker.js"), {
+      workerData: { message }
+    })
 
-    worker.on("message", (result) => resolve(result))
-    worker.on("error", (err) => reject(err))
+    worker.on("message", (processedMessage) => {
+      console.log(`Main thread received from worker: ${processedMessage}`)
+      resolve(processedMessage)
+    })
+
+    worker.on("error", (error) => {
+      console.error(`Worker error: ${error}`)
+      reject(error)
+    })
+
     worker.on("exit", (code) => {
       if (code !== 0) {
-        reject(new Error(`Worker stopped with exit code ${code}`))
+        console.error(`Worker stopped with exit code ${code}`)
       }
     })
   })
 }
 
-// Pass some data to the worker thread - as an obj
-;(async () => {
+// Kafka consumer (keeps listening)
+const runConsumer = async () => {
   try {
-    const result = await runWorkerTask({ num: 10 })
-    console.log("Result from worker:", result)
+    const consumer = kafka.consumer({ groupId: "main-group" })
+
+    await consumer.connect()
+    await consumer.subscribe({ topic: "first_topic", fromBeginning: false })
+
+    runWorkerTask("runOnce").catch((error) => {
+      console.error("Worker thread error:", error)
+    })
+    await consumer.run({
+      eachMessage: async ({ message }) => {
+        const messageValue = message.value?.toString()
+        console.log(`Received Kafka message: ${messageValue}`)
+
+        // Ensure we don't trigger an infinite loop
+      }
+    })
   } catch (err) {
-    console.error("Error from worker:", err)
+    console.error("Error creating consumer:", err)
   }
-})()
+}
+
+// Graceful shutdown
+const shutdown = async () => {
+  console.log("Shutting down...")
+  try {
+    await kafka.consumer({ groupId: "main-group" }).disconnect()
+    console.log("Kafka consumer disconnected.")
+  } catch (error) {
+    console.error("Error during shutdown:", error)
+  }
+  process.exit(0)
+}
+
+// Listen for termination signals
+process.on("SIGINT", shutdown)
+process.on("SIGTERM", shutdown)
+
+runConsumer()
