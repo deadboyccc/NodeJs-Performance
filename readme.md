@@ -1,6 +1,6 @@
 # Node.js Performance Benchmark
 
-This project is a test benchmark of the Node.js process, involving various methods to optimize backend performance using clustering, worker threads, caching, and other scaling strategies.
+This project is a playground to benchmark Node.js , involving various methods to optimize backend performance using clustering, worker threads, caching, and other scaling strategies.
 
 ## Features  
 
