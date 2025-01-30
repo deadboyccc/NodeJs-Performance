@@ -1,18 +1,27 @@
-const { Kafka, ErrorCodes, CompressionTypes } =
-  require("@confluentinc/kafka-javascript").KafkaJS
+import { Kafka } from "kafkajs"
 
-;async () => {
-  const producer = new Kafka().producer({
-    "bootstrap.servers": "<fill>"
-  })
+const kafka = new Kafka({
+  clientId: "my-producer",
+  brokers: ["localhost:9092"]
+})
 
-  await producer.connect()
+const producer = kafka.producer()
 
-  const deliveryReports = await producer.send({
-    topic: "test-topic",
-    messages: [{ value: "v1", key: "x" }]
-  })
+const run = async () => {
+  try {
+    await producer.connect()
 
-  console.log({ deliveryReports })
-  await producer.disconnect()
+    const deliveryReports = await producer.send({
+      topic: "first_topic",
+      messages: [{ value: "hello from nodejs" }]
+    })
+
+    console.log("Message sent successfully:", deliveryReports)
+  } catch (error) {
+    console.error("Error producing message:", error)
+  } finally {
+    await producer.disconnect()
+  }
 }
+
+run()
