@@ -5,7 +5,11 @@
   "scripts": {
     "start": "ts-node ./src/manualClustering.ts",
     "nodemon": "nodemon ./src/redis/app.ts",
-    "test": "jest"
+    "test": "jest --no-cache"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +39,7 @@
     "kafkajs": "^2.2.4",
     "mongoose": "^8.9.5",
     "redis": "^4.7.0",
+    "ts-jest": "^29.2.5",
     "uuid": "^11.0.5"
   }
 }
