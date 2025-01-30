@@ -2,12 +2,22 @@
 
 This project is a test benchmark of the Node.js process, involving various methods to optimize backend performance using clustering, worker threads, caching, and other scaling strategies.
 
-## Features
+## Features  
 
-- **Clustering**: Utilize multiple CPU cores to handle concurrent requests.
-- **Worker Threads**: Offload CPU-intensive tasks to worker threads.
-- **Caching**: Implement caching strategies to reduce load times.
-- **Scaling Strategies**: Explore different methods to scale the application.
+- **Clustering**: Utilize multiple CPU cores to handle concurrent requests efficiently.  
+- **Worker Threads**: Offload CPU-intensive tasks to worker threads to improve performance.  
+- **Caching**: Implement caching strategies (e.g., Redis, in-memory caching) to reduce response times and database load.  
+- **Scaling Strategies**: Explore horizontal and vertical scaling approaches to optimize application performance.  
+- **Load Balancing**: Distribute incoming network traffic across multiple servers to ensure high availability and fault tolerance.  
+- **Database Optimization**: Apply indexing, query optimization, and connection pooling to enhance database performance.  
+- **Event-Driven Microservices**:  
+  - Use **RabbitMQ** for reliable message queuing and asynchronous task processing.  
+  - Use **Apache Kafka** for high-throughput event streaming and real-time data processing.  
+- **Benchmarking & Performance Testing**:  
+  - Measure throughput, latency, and resource utilization.  
+  - Compare the impact of different scaling strategies and caching mechanisms.  
+  - Stress-test message brokers (RabbitMQ, Kafka) to evaluate their performance under high loads.  
+
 
 ## Benchmarking Tools
 
@@ -17,6 +27,7 @@ This project is a test benchmark of the Node.js process, involving various metho
 ## Monitoring and Visualization
 
 - **PM2**: Use the PM2 npm package to view a beautiful UI showing performance metrics.
+- **Grafana**: Visualize performance data with customizable dashboards.
 
 ## Getting Started
 
@@ -44,6 +55,26 @@ This project is a test benchmark of the Node.js process, involving various metho
   ```bash
   pm2 monit
   ```
+
+5. **View Grafana Dashboards**:
+  - Start Grafana server:
+    ```bash
+    grafana-server
+    ```
+  - Open Grafana in your browser and configure dashboards.
+
+## Project Structure
+
+- **src/**: Contains source code for the application.
+  - **index.js**: Entry point of the application.
+  - **cluster.js**: Implements clustering logic.
+  - **worker.js**: Implements worker threads logic.
+  - **cache.js**: Implements caching strategies.
+  - **db.js**: Database optimization techniques.
+- **benchmarks/**: Contains benchmarking scripts.
+  - **k6/**: k6 benchmarking scripts.
+  - **ab/**: Apache Benchmark scripts.
+- **config/**: Configuration files for different environments.
 
 ## License
 
