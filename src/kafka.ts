@@ -7,7 +7,7 @@ const kafka = new Kafka({
 
 const producer = kafka.producer()
 
-const run = async () => {
+const runProducer = async () => {
   try {
     await producer.connect()
 
@@ -23,5 +23,21 @@ const run = async () => {
     await producer.disconnect()
   }
 }
+const runConsumer = async () => {
+  try {
+    const consumer = kafka.consumer({
+      groupId: "my-group"
+    })
+    await consumer.connect()
+    await consumer.subscribe({ topic: "first_topic" })
+    await consumer.run({
+      eachMessage: async ({ message }) => {
+        console.log(`Received message: ${message.value!.toString()}`)
+      }
+    })
+  } catch (err) {
+    console.error("Error creating consumer:", err)
+  }
+}
 
-run()
+runConsumer()
