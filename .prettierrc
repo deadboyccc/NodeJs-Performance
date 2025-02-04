@@ -3,5 +3,5 @@
   "useTabs": false,
   "arrowParens": "always",
   "trailingComma": "none",
-  "semi": false
+  "semi": true
 }
