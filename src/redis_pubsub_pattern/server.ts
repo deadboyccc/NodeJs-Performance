@@ -17,7 +17,9 @@ const redisClient = createClient({
 })();
 
 app.get("/", async (req, res) => {
-  console.log(`process id = ${process.pid}`);
+  console.log(
+    `process id = ${process.pid} | process args = ${process.argv.at(0)}`
+  );
   const num = Number.parseInt(req.query.number as string, 10);
   if (num % 2 == 0) {
     redisClient.publish("sub1", num.toString());
