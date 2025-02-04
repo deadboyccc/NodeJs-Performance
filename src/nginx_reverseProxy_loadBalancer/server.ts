@@ -3,13 +3,16 @@
 import express, { Response, Request } from "express";
 import axios from "axios";
 
+let num: number = 0;
 const app = express();
 app.get("/api", async (req: Request, res: Response) => {
   try {
     const response = await axios.get(
       "https://jsonplaceholder.typicode.com/posts"
     );
-    console.log(`${process.pid}: handled the request`);
+    num++;
+    console.log(`[${process.pid}] [${num}]`);
+
     res.json(response.data);
   } catch (error) {
     console.error("Error fetching data:", error);
