@@ -1,5 +1,18 @@
 import { fibonacciSeriesOptimized } from "../../IPC_Pattern/mathLogic/fib";
-import { redisClient } from "../redisClient";
+import { createClient } from "redis";
+
+// Create Redis client
+const redisClient = createClient({
+  url: "redis://localhost:6379"
+});
+(async () => {
+  try {
+    await redisClient.connect(); // Ensure the Redis client connects before usage
+    console.log("Connected to Redis");
+  } catch (error) {
+    console.error("Redis connection error:", error);
+  }
+})();
 (async () => {
   try {
     await redisClient.subscribe("sub1", (msg, _ch) => {
